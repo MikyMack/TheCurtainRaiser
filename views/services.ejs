@@ -267,13 +267,13 @@
                                         <h3 style="margin-top: 0; color: #2a2a2a; font-size: 1.5rem;"><%= service.name %></h3>
                                         <div class="service-details" style="margin-top: 15px; color: #3b3a3a; line-height: 1.6;">
                                             <% if (service.description) { %>
-                                                <span style="color: goldenrod;"><%= service.description %></span>
+                                                <span style="color: #972908;"><%= service.description %></span>
                                             <% } %>
                                             
                                             <% if (service.points && service.points.length > 0) { %>
                                                 <ul style="padding-left: 20px; margin: 0; text-align:left;">
                                                     <% service.points.forEach(point => { %>
-                                                        <li>👉🏽<%= point %></li>
+                                                        <li>⭐ <%= point %></li>
                                                     <% }); %>
                                                 </ul>
                                             <% } %>
