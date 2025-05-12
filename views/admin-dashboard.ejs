@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background-color: #212529;
+            color: white;
+            min-height: calc(100vh - 56px);
+            position: sticky;
+            top: 56px;
+            z-index: 1000;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.75);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .border-dashed {
+            border: 2px dashed #dee2e6;
+        }
+        
+        .card-img-placeholder {
+            height: 150px;
+            background-color: #6c757d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+                position: relative;
+                top: 0;
+            }
+            
+            main {
+                padding-top: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin-dashboard">
+               <img src="/img/logo-light.png" alt="logoimage" style="width: 100px;" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> Admin
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="/logout">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 col-md-3 sidebar p-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin-dashboard">
+                            <i class="fas fa-concierge-bell me-2"></i>Service Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin-gallery">
+                            <i class="fas fa-images me-2"></i>Gallery Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin-announcements">
+                            <i class="fas fa-bullhorn me-2"></i>Announcements
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-lg-10 col-md-9 ms-sm-auto px-md-4 py-4">
+                <!-- Flash Messages -->
+                <% if (messages.success) { %>
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <%= messages.success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <%= messages.error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+    
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Service Management</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                        <i class="fas fa-plus me-1"></i> Add Service
+                    </button>
+                </div>
+                
+                <div class="row">
+                    <% services.forEach(service => { %>
+                    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100">
+                            <% if(service.imageUrl) { %>
+                                <img src="<%= service.imageUrl %>" class="card-img-top" alt="<%= service.name %>">
+                            <% } else { %>
+                                <div class="card-img-placeholder">
+                                    <i class="fas fa-concierge-bell fa-3x"></i>
+                                </div>
+                            <% } %>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="card-title"><%= service.name %></h5>
+                                    <form action="/services/toggle-active/<%= service._id %>" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm <%= service.isActive ? 'btn-success' : 'btn-secondary' %>">
+                                            <%= service.isActive ? 'Active' : 'Inactive' %>
+                                        </button>
+                                    </form>
+                                </div>
+                                <p class="card-text"><%= service.description %></p>
+                                <% if(service.points && service.points.length > 0) { %>
+                                    <ul class="list-unstyled">
+                                        <% service.points.forEach(point => { %>
+                                            <li><i class="fas fa-check-circle text-success me-2"></i><%= point %></li>
+                                        <% }); %>
+                                    </ul>
+                                <% } %>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editServiceModal"
+                                        data-service-id="<%= service._id %>"
+                                        data-service-name="<%= service.name %>"
+                                        data-service-description="<%= service.description %>"
+                                        data-service-points="<%= service.points.join('\n') %>">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <form action="/services/delete/<%= service._id %>" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Add Service Modal -->
+    <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="/create-services" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addServiceModalLabel">Add New Service</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Service Name</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Key Points (one per line)</label>
+                            <textarea class="form-control" name="points" rows="5"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Image</label>
+                            <input type="file" class="form-control" name="image" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Service Modal -->
+    <div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="editServiceForm" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editServiceModalLabel">Edit Service</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Service Name</label>
+                            <input type="text" class="form-control" name="name" id="editServiceName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" id="editServiceDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Key Points (one per line)</label>
+                            <textarea class="form-control" name="points" id="editServicePoints" rows="5"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Image</label>
+                            <img id="editServiceImage" src="" class="img-thumbnail mb-2 d-block" style="max-height: 200px;">
+                            <label class="form-label">Change Image</label>
+                            <input type="file" class="form-control" name="image" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize edit modal with service data
+        document.getElementById('editServiceModal').addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const serviceId = button.getAttribute('data-service-id');
+            const serviceName = button.getAttribute('data-service-name');
+            const serviceDescription = button.getAttribute('data-service-description');
+            const servicePoints = button.getAttribute('data-service-points');
+            const serviceImage = button.closest('.card').querySelector('.card-img-top')?.src || '';
+            
+            const modal = this;
+            modal.querySelector('#editServiceName').value = serviceName;
+            modal.querySelector('#editServiceDescription').value = serviceDescription;
+            modal.querySelector('#editServicePoints').value = servicePoints;
+            modal.querySelector('#editServiceImage').src = serviceImage;
+            modal.querySelector('#editServiceForm').action = `/services/update/${serviceId}`;
+        });
+    </script>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Confirm before delete
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if(!confirm('Are you sure you want to delete this service?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

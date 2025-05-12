@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background-color: #212529;
+            color: white;
+            min-height: calc(100vh - 56px);
+            position: sticky;
+            top: 56px;
+            z-index: 1000;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.75);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .border-dashed {
+            border: 2px dashed #dee2e6;
+        }
+        
+        .card-img-placeholder {
+            height: 150px;
+            background-color: #6c757d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+                position: relative;
+                top: 0;
+            }
+            
+            main {
+                padding-top: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin-dashboard">
+               <img src="/img/logo-light.png" alt="logoimage" style="width: 100px;" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> Admin
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="/logout">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 col-md-3 sidebar p-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin-dashboard">
+                            <i class="fas fa-concierge-bell me-2"></i>Service Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin-gallery">
+                            <i class="fas fa-images me-2"></i>Gallery Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin-announcements">
+                            <i class="fas fa-bullhorn me-2"></i>Announcements
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-lg-10 col-md-9 ms-sm-auto px-md-4 py-4">
+                <!-- Flash Messages -->
+                <% if (messages.success) { %>
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <%= messages.success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <%= messages.error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+    
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Announcements Management</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAnnouncementModal">
+                        <i class="fas fa-plus me-1"></i> Add Announcement
+                    </button>
+                </div>
+                
+                <div class="row">
+                    <% announcements.forEach(announcement => { %>
+                    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100">
+                            <% if(announcement.imageUrl) { %>
+                                <img src="<%= announcement.imageUrl %>" class="card-img-top" alt="<%= announcement.title %>">
+                            <% } else { %>
+                                <div class="card-img-placeholder">
+                                    <i class="fas fa-bullhorn fa-3x"></i>
+                                </div>
+                            <% } %>
+                            <div class="card-body">
+                                <h5 class="card-title"><%= announcement.title %></h5>
+                                <p class="text-muted small mb-2">
+                                    <%= new Date(announcement.date).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    }) %>
+                                </p>
+                                <p class="card-text"><%= announcement.description %></p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editAnnouncementModal"
+                                        data-announcement-id="<%= announcement._id %>"
+                                        data-announcement-title="<%= announcement.title %>"
+                                        data-announcement-description="<%= announcement.description %>"
+                                        data-announcement-date="<%= announcement.date.toISOString().split('T')[0] %>"
+                                        data-announcement-image="<%= announcement.imageUrl || '' %>">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <form action="/announcements/delete/<%= announcement._id %>" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Add Announcement Modal -->
+    <div class="modal fade" id="addAnnouncementModal" tabindex="-1" aria-labelledby="addAnnouncementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="/create-announcements" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAnnouncementModalLabel">Add New Announcement</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="5"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" name="date">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Image</label>
+                            <input type="file" class="form-control" name="image" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Announcement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Announcement Modal -->
+    <div class="modal fade" id="editAnnouncementModal" tabindex="-1" aria-labelledby="editAnnouncementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="editAnnouncementForm" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAnnouncementModalLabel">Edit Announcement</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" name="title" id="editAnnouncementTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" id="editAnnouncementDescription" rows="5"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" name="date" id="editAnnouncementDate">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Image</label>
+                            <img id="editAnnouncementImage" src="" class="img-thumbnail mb-2 d-block" style="max-height: 200px;">
+                            <label class="form-label">Change Image</label>
+                            <input type="file" class="form-control" name="image" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update Announcement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize edit modal with announcement data
+        document.getElementById('editAnnouncementModal').addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const announcementId = button.getAttribute('data-announcement-id');
+            const announcementTitle = button.getAttribute('data-announcement-title');
+            const announcementDescription = button.getAttribute('data-announcement-description');
+            const announcementDate = button.getAttribute('data-announcement-date');
+            const announcementImage = button.getAttribute('data-announcement-image');
+            
+            const modal = this;
+            modal.querySelector('#editAnnouncementTitle').value = announcementTitle;
+            modal.querySelector('#editAnnouncementDescription').value = announcementDescription;
+            modal.querySelector('#editAnnouncementDate').value = announcementDate;
+            modal.querySelector('#editAnnouncementImage').src = announcementImage;
+            modal.querySelector('#editAnnouncementForm').action = `/announcements/update/${announcementId}`;
+        });
+    </script>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Confirm before delete
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if(!confirm('Are you sure you want to delete this service?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
