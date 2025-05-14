@@ -426,7 +426,7 @@ app.get('/admin-gallery', authMiddleware, async (req, res) => {
 // POST - Create new gallery item
 app.post('/create-gallery', authMiddleware, upload.single('image'), async (req, res) => {
     try {
-        const { title, category } = req.body;
+        const { title, category,createdAt } = req.body;
         
         if (!req.file) {
             throw new Error('Image is required');
@@ -435,7 +435,8 @@ app.post('/create-gallery', authMiddleware, upload.single('image'), async (req, 
         const newGalleryItem = new Gallery({
             title,
             imageUrl: req.file.path,
-            category
+            category,
+            createdAt
         });
 
         await newGalleryItem.save();

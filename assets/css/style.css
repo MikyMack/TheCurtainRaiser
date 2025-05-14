@@ -4698,6 +4698,7 @@ body.error404 .sm-title-block span {
 -------------------------------------------------------- */
 .footer {
   position: relative;
+  padding-left: 20px;
 }
 .footer .logo-wrap {
   background-color: var(--bg-color);
@@ -5779,7 +5780,7 @@ ul.intro-project-list li h5.title-list-project + p.description-list-project {
   font-size: 86px;
   font-family: var(--body-font);
   margin-right: 30px;
-  width: 40px;
+  width: 50px;
   line-height: 0.9;
   transform: scaleY(1.08);
 }
@@ -5793,6 +5794,14 @@ ul.intro-project-list li h5.title-list-project + p.description-list-project {
   .dsn-service.services-personal .service-item .title-box {
     flex-direction: column;
     align-items: baseline;
+  }
+}
+#sssss {
+  margin-left: 170px;
+}
+@media only screen and (max-width:767px){
+  #sssss  {
+    margin-left: 100px;
   }
 }
 .dsn-service.services-personal .service-item .text {

@@ -195,6 +195,9 @@
                                 <div class="card-body">
                                     <h5 class="card-title"><%= item.title %></h5>
                                     <span class="badge bg-primary"><%= item.category %></span>
+                                    <span class="badge" style="color: #212529;">
+                                        <%= new Date(item.createdAt).toISOString().slice(0, 10) %>
+                                      </span>
                                 </div>
                                 <div class="card-footer bg-transparent">
                                     <div class="d-flex justify-content-between">
@@ -303,6 +306,11 @@
                         <label class="form-label">Image</label>
                         <input type="file" class="form-control" name="image" accept="image/*" required>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Created At</label>
+                        <input type="date" class="form-control" name="createdAt" id="editCreatedAt" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -338,7 +346,7 @@
                             </select>
                         </div>
                         <div class="mt-2" id="editNewCategoryInputContainer" style="display: none;">
-                            <input type="text" class="form-control" id="editNewCategoryInput" placeholder="Enter new category name">
+                            <input type="text" class="form-control" id="editNewCategoryInput" value="createdAt" placeholder="Enter new category name">
                         </div>
                     </div>
                     <div class="mb-3">
@@ -347,12 +355,19 @@
                         <label class="form-label">Change Image</label>
                         <input type="file" class="form-control" name="image" accept="image/*">
                     </div>
+            
+    
+                    <div class="mb-3">
+                        <label class="form-label">Created At</label>
+                        <input type="date" class="form-control" name="createdAt" value="createdAt" id="editCreatedAt" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Update Item</button>
                 </div>
             </form>
+            
         </div>
     </div>
 </div>
