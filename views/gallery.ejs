@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="description"
         content="A Name For The Best Public Speaking Training & The Best Acting Training. The Curtain Raiser was organized in 1985 at Madras Kerala Samaj for theater activities.">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500&amp;display=swap"
         rel="stylesheet">
@@ -19,6 +19,299 @@
     <link href="/css/plugins.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://use.typekit.net/bdf4btv.css">
+    <style>
+        /* Base Container */
+        .insta-gallery-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+    
+        /* Filter Bar - Mobile First */
+        .insta-filter-bar {
+            width: 100%;
+            margin-bottom: 30px;
+            position: relative;
+        }
+    
+        /* Mobile Dropdown */
+        .insta-filter-select {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            appearance: none;
+            background: white url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+            font-size: 14px;
+            cursor: pointer;
+            display: block; /* Show on mobile */
+        }
+    
+        /* Desktop Button Group */
+        .insta-filter-buttons {
+            display: none; /* Hidden on mobile */
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+    
+        .insta-filter-btn {
+            padding: 8px 15px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+    
+        .insta-filter-btn:hover {
+            background: #e0e0e0;
+        }
+    
+        .insta-filter-btn.active {
+            background: #000;
+            color: white;
+        }
+    
+        /* Masonry Grid */
+        .insta-grid {
+            column-count: 2;
+            column-gap: 20px;
+        }
+    
+        @media (max-width: 426px) {
+            .insta-category-tag {
+                padding: 2px 6px;
+                font-size: 8px;
+                font-weight: 400;
+            }
+        }
+    
+        @media (min-width: 768px) {
+            .insta-filter-select {
+                display: none; /* Hide dropdown on desktop */
+            }
+            
+            .insta-filter-buttons {
+                display: flex; /* Show buttons on desktop */
+            }
+            
+            .insta-grid {
+                column-count: 3;
+            }
+    
+            .insta-card-footer {
+                padding: 15px;
+            }
+        }
+    
+        @media (min-width: 1024px) {
+            .insta-grid {
+                column-count: 4;
+            }
+        }
+    
+        .insta-grid-item {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            display: inline-block;
+            width: 100%;
+        }
+    
+        /* Card */
+        .insta-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+    
+        .insta-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+    
+        .insta-image-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+    
+        .insta-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px 8px 0 0;
+        }
+    
+        .insta-category-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    
+        .insta-card-footer {
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .insta-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
+    
+        .insta-action-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+    
+        .insta-action-btn:hover {
+            background: #000;
+        }
+    
+        .insta-action-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: #333;
+        }
+    
+        .insta-action-btn:hover svg {
+            fill: white;
+        }
+    
+        /* Pagination */
+        .insta-pagination {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+    
+        .insta-page-link {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+    
+        .insta-page-link:hover {
+            background: #f5f5f5;
+        }
+    
+        .insta-page-link.active {
+            background: #000;
+            color: #fff;
+        }
+    
+        /* Modal */
+        .insta-modal {
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+    
+        .insta-modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+    
+        .insta-modal-image {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
+    
+        .insta-modal-caption {
+            margin-top: 15px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+        }
+    
+        .insta-modal-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 30px;
+        }
+    
+        .insta-modal-nav button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+    
+        .insta-modal-nav button:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    
+        .insta-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    
+        .insta-close:hover {
+            color: red;
+        }
+    </style>
 </head>
 
 <body class="v-dark dsn-ajax">
@@ -186,7 +479,7 @@
             <!-- ========== Header ========== -->
             <header class="header-page dsn-header-animation pb-60 pt-section p-relative">
 
-                <div class="p-relative container pb-80 pt-80 dsn-hero-parallax-title h-100">
+                <div class="p-relative container pb-40 pt-80 dsn-hero-parallax-title h-100">
                     <div class="p-relative d-flex align-items-center w-100  h-100 ">
 
                         <div class="box-content w-100 text-center z-index-1">
@@ -252,275 +545,23 @@
             <div id="page_wrapper" class="wrapper">
 
                 <!-- ========== Portfolio ========== -->
-                <style>
-                    /* Base Container */
-                    .insta-gallery-container {
-                        width: 100%;
-                        max-width: 1400px;
-                        margin: 0 auto;
-                        padding: 20px;
-                        box-sizing: border-box;
-                    }
-
-                    /* Filter Bar */
-                    .insta-filter-bar {
-                        width: 100%;
-                        padding: 5px 0;
-                        margin-bottom: 30px;
-                        position: sticky;
-                        top: 0;                     
-                        z-index: 10;
-                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-                        backdrop-filter: blur(5px);
-                    }
-
-                    .insta-filter-buttons {
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: center;
-                        gap: 10px;
-                    }
-
-                    .insta-filter-btn {
-                        padding: 8px 20px;
-                        border: none;
-                        background: #f5f5f5;
-                        border-radius: 20px;
-                        cursor: pointer;
-                        font-size: 14px;
-                        font-weight: 500;
-                        color: #333;
-                        transition: all 0.3s ease;
-                    }
-
-                    .insta-filter-btn:hover {
-                        background: #e0e0e0;
-                    }
-
-                    .insta-filter-btn.active {
-                        background: #000;
-                        color: white;
-                    }
-
-                    /* Masonry Grid */
-                    .insta-grid {
-                        column-count: 2;
-                        column-gap: 20px;
-                    }
-
-                    @media (min-width: 768px) {
-                        .insta-grid {
-                            column-count: 3;
-                        }
-                        .insta-card-footer{
-                            padding: 15px;
-                        }
-                    }
-
-                    @media (min-width: 1024px) {
-                        .insta-grid {
-                            column-count: 4;
-                        }
-                    }
-
-                    .insta-grid-item {
-                        break-inside: avoid;
-                        margin-bottom: 20px;
-                        display: inline-block;
-                        width: 100%;
-                    }
-
-                    /* Card */
-                    .insta-card {
-                        background: white;
-                        border-radius: 12px;
-                        overflow: hidden;
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                        transition: all 0.3s ease;
-                        cursor: pointer;
-                    }
-
-                    .insta-card:hover {
-                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-                    }
-
-                    .insta-image-wrapper {
-                        position: relative;
-                        width: 100%;
-                        overflow: hidden;
-                    }
-
-                    .insta-image {
-                        width: 100%;
-                        height: auto;
-                        display: block;
-                        border-radius: 8px 8px 0 0;
-                    }
-
-                    .insta-category-tag {
-                        position: absolute;
-                        top: 10px;
-                        right: 10px;
-                        background: rgba(0, 0, 0, 0.7);
-                        color: white;
-                        padding: 5px 12px;
-                        border-radius: 20px;
-                        font-size: 12px;
-                        font-weight: 500;
-                    }
-
-                    .insta-card-footer {
-                        padding: 5px;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    }
-
-                    .insta-title {
-                        margin: 0;
-                        font-size: 16px;
-                        font-weight: 600;
-                        color: #333;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        max-width: 80%;
-                    }
-
-                    .insta-action-btn {
-                        width: 30px;
-                        height: 30px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        background: #f5f5f5;
-                        border-radius: 50%;
-                        transition: all 0.3s ease;
-                    }
-
-                    .insta-action-btn:hover {
-                        background: #000;
-                    }
-
-                    .insta-action-btn svg {
-                        width: 14px;
-                        height: 14px;
-                        fill: #333;
-                    }
-
-                    .insta-action-btn:hover svg {
-                        fill: white;
-                    }
-
-                    /* Pagination */
-                    .insta-pagination {
-                        display: flex;
-                        justify-content: center;
-                        gap: 15px;
-                        margin-top: 40px;
-                    }
-
-                    .insta-page-link {
-                        padding: 8px 16px;
-                        border-radius: 6px;
-                        text-decoration: none;
-                        color: #333;
-                        font-weight: 500;
-                        transition: all 0.3s ease;
-                        border: 1px solid #eee;
-                    }
-
-                    .insta-page-link:hover {
-                        background: #f5f5f5;
-                    }
-
-                    .insta-page-link.active {
-                        background: #000;
-                        color: #fff;
-                    }
-
-                    .insta-modal {
-                        position: fixed;
-                        z-index: 9999;
-                        left: 0;
-                        top: 0;
-                        width: 100vw;
-                        height: 100vh;
-                        overflow: hidden;
-                        background-color: rgba(0, 0, 0, 0.9);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        transition: opacity 0.3s ease;
-                    }
-
-                    .insta-modal-content {
-                        max-width: 90vw;
-                        max-height: 90vh;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        position: relative;
-                    }
-
-                    .insta-modal-image {
-                        max-width: 100%;
-                        max-height: 80vh;
-                        border-radius: 10px;
-                    }
-
-                    .insta-modal-caption {
-                        margin-top: 15px;
-                        color: white;
-                        font-size: 16px;
-                        text-align: center;
-                    }
-
-                    .insta-modal-nav {
-                        position: absolute;
-                        top: 50%;
-                        width: 100%;
-                        display: flex;
-                        justify-content: space-between;
-                        transform: translateY(-50%);
-                        padding: 0 30px;
-                    }
-
-                    .insta-modal-nav button {
-                        background: rgba(255, 255, 255, 0.2);
-                        color: white;
-                        border: none;
-                        padding: 10px 15px;
-                        font-size: 20px;
-                        border-radius: 50%;
-                        cursor: pointer;
-                        transition: background 0.3s ease;
-                    }
-
-                    .insta-modal-nav button:hover {
-                        background: rgba(255, 255, 255, 0.4);
-                    }
-
-                    .insta-close {
-                        position: absolute;
-                        top: 20px;
-                        right: 30px;
-                        font-size: 30px;
-                        color: white;
-                        cursor: pointer;
-                        font-weight: bold;
-                    }
-
-                    .insta-close:hover {
-                        color: red;
-                    }
-                </style>
-
+               
+                
                 <div class="insta-gallery-container">
                     <!-- Filter -->
                     <div class="insta-filter-bar">
-                        <div class="insta-filter-buttons">
+                        <!-- Mobile Dropdown -->
+                        <select class="insta-filter-select" onchange="filterGallery(this.value)">
+                            <option value="all" <%= currentCategory === 'all' ? 'selected' : '' %>>All Categories</option>
+                            <% categories.forEach(cat=> { %>
+                                <option value="<%= cat %>" <%= currentCategory === cat ? 'selected' : '' %>>
+                                    <%= cat %>
+                                </option>
+                            <% }); %>
+                        </select>
+                        
+                        <!-- Desktop Buttons -->
+                        <div class="insta-filter-buttons mb-50">
                             <button class="insta-filter-btn <%= currentCategory === 'all' ? 'active' : '' %>"
                                 onclick="filterGallery('all')">All</button>
                             <% categories.forEach(cat=> { %>
@@ -528,10 +569,10 @@
                                     onclick="filterGallery('<%= cat %>')">
                                     <%= cat %>
                                 </button>
-                                <% }); %>
+                            <% }); %>
                         </div>
                     </div>
-
+                
                     <!-- Gallery -->
                     <div class="insta-grid">
                         <% galleryItems.forEach((item, index)=> { %>
@@ -558,31 +599,32 @@
                                     </div>
                                 </div>
                             </div>
-                            <% }); %>
+                        <% }); %>
                     </div>
-
+                
                     <!-- Pagination -->
                     <% if (totalPages> 1) { %>
                         <div class="insta-pagination">
                             <% if (hasPreviousPage) { %>
                                 <a href="/gallery?category=<%= currentCategory %>&page=<%= previousPage %>"
                                     class="insta-page-link">&larr; Previous</a>
-                                <% } %>
-
-                                    <% for (let i=1; i <=totalPages; i++) { %>
-                                        <a href="/gallery?category=<%= currentCategory %>&page=<%= i %>"
-                                            class="insta-page-link <%= currentPage === i ? 'active' : '' %>">
-                                            <%= i %>
-                                        </a>
-                                        <% } %>
-
-                                            <% if (hasNextPage) { %>
-                                                <a href="/gallery?category=<%= currentCategory %>&page=<%= nextPage %>"
-                                                    class="insta-page-link">Next &rarr;</a>
-                                                <% } %>
+                            <% } %>
+                
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <a href="/gallery?category=<%= currentCategory %>&page=<%= i %>"
+                                    class="insta-page-link <%= currentPage === i ? 'active' : '' %>">
+                                    <%= i %>
+                                </a>
+                            <% } %>
+                
+                            <% if (hasNextPage) { %>
+                                <a href="/gallery?category=<%= currentCategory %>&page=<%= nextPage %>"
+                                    class="insta-page-link">Next &rarr;</a>
+                            <% } %>
                         </div>
-                        <% } %>
+                    <% } %>
                 </div>
+                
                 <!-- Gallery Modal -->
                 <div id="instaModal" class="insta-modal" style="display: none; opacity: 0;">
                     <span class="insta-close" onclick="closeGallery()">&times;</span>
@@ -590,7 +632,7 @@
                         <img id="instaModalImage" class="insta-modal-image" src="" alt="">
                         <div class="insta-modal-caption">
                             <span id="instaCurrentIndex">1</span> / <%= galleryItems.length %> -
-                                <span id="instaCaption"></span>
+                            <span id="instaCaption"></span>
                         </div>
                         <div class="insta-modal-nav">
                             <button onclick="changeImage(-1)">←</button>
@@ -598,8 +640,7 @@
                         </div>
                     </div>
                 </div>
-
-
+                
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         let currentImageIndex = 0;
@@ -608,19 +649,19 @@
                             { src: "<%= item.imageUrl %>", title: "<%= item.title %>" },
                             <% }); %>
                         ];
-
+                
                         function openGallery(index) {
                             currentImageIndex = index;
                             const modal = document.getElementById('instaModal');
                             const modalImg = document.getElementById('instaModalImage');
                             const caption = document.getElementById('instaCaption');
                             const currentIndex = document.getElementById('instaCurrentIndex');
-
+                
                             if (!modal || !modalImg || !caption || !currentIndex) {
                                 console.error('Gallery modal elements not found.');
                                 return;
                             }
-
+                
                             modal.style.display = "flex";
                             setTimeout(() => {
                                 modal.style.opacity = 1;
@@ -630,7 +671,7 @@
                             currentIndex.textContent = currentImageIndex + 1;
                             document.body.style.overflow = 'hidden';
                         }
-
+                
                         function closeGallery() {
                             const modal = document.getElementById('instaModal');
                             modal.style.opacity = 0;
@@ -639,32 +680,32 @@
                             }, 300);
                             document.body.style.overflow = 'auto';
                         }
-
+                
                         function changeImage(direction) {
                             currentImageIndex += direction;
                             if (currentImageIndex >= galleryImages.length) currentImageIndex = 0;
                             if (currentImageIndex < 0) currentImageIndex = galleryImages.length - 1;
-
+                
                             const modalImg = document.getElementById('instaModalImage');
                             const caption = document.getElementById('instaCaption');
                             const currentIndex = document.getElementById('instaCurrentIndex');
-
+                
                             modalImg.src = galleryImages[currentImageIndex].src;
                             caption.textContent = galleryImages[currentImageIndex].title;
                             currentIndex.textContent = currentImageIndex + 1;
                         }
-
+                
                         window.openGallery = openGallery;
                         window.closeGallery = closeGallery;
                         window.changeImage = changeImage;
-
+                
                         window.onclick = function (event) {
                             const modal = document.getElementById('instaModal');
                             if (event.target === modal) {
                                 closeGallery();
                             }
                         }
-
+                
                         document.addEventListener('keydown', function (event) {
                             const modal = document.getElementById('instaModal');
                             if (modal && modal.style.display === 'flex') {
@@ -677,7 +718,7 @@
                                 }
                             }
                         });
-
+                
                         window.filterGallery = function (category) {
                             window.location.href = `/gallery?category=${category}&page=1`;
                         }
