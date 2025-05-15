@@ -2865,7 +2865,7 @@ a:hover, a:active {
 }
 
 .header-page {
-  padding-top: 180px;
+  padding-top: 100px;
 }
 @media only screen and (max-width: 991px) {
   .header-page .box-content {
