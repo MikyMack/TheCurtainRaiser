@@ -5804,6 +5804,16 @@ ul.intro-project-list li h5.title-list-project + p.description-list-project {
     margin-left: 100px;
   }
 }
+@media only screen and (max-width:380px){
+  #sssss  {
+    margin-left: 70px;
+  }
+}
+@media only screen and (max-width:321px){
+  #sssss  {
+    margin-left: 30px;
+  }
+}
 .dsn-service.services-personal .service-item .text {
   margin-left: 72px;
 }

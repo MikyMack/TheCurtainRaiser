@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="description"
         content="A Name For The Best Public Speaking Training & The Best Acting Training. The Curtain Raiser was organized in 1985 at Madras Kerala Samaj for theater activities.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500&amp;display=swap"
         rel="stylesheet">
@@ -156,7 +156,7 @@
 
                         </div>
                     </div>
-                   
+
                 </div>
             </nav>
             <div id="navbar_toggle" class="navbar-toggle">
@@ -226,12 +226,14 @@
 
                             <ul class="dsn-socials box-social">
                                 <li>
-                                    <a href="https://www.facebook.com/share/12J9ors9F3o/" target="_blank" class="background-main">
+                                    <a href="https://www.facebook.com/share/12J9ors9F3o/" target="_blank"
+                                        class="background-main">
                                         <i class="fab fa-facebook-f" aria-hidden="true"></i> <span>FB</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="https://www.instagram.com/actorsorbit?igsh=MXN4b2FkeWtzMjJidw==" target="_blank" class="background-main">
+                                    <a href="https://www.instagram.com/actorsorbit?igsh=MXN4b2FkeWtzMjJidw=="
+                                        target="_blank" class="background-main">
                                         <i class="fab fa-instagram" aria-hidden="true"></i> <span>IN</span>
                                     </a>
                                 </li>
@@ -250,225 +252,439 @@
             <div id="page_wrapper" class="wrapper">
 
                 <!-- ========== Portfolio ========== -->
-                <div class="p-relative work-massonary-grid mb-section">
-                    <div class="p-relative">
-                        <div class="root-posts has-filter">
-                            <!-- Category Filter -->
-                            <div class="dsn-filtering z-index-1 p-relative w-100 mb-70 pt-50 pb-50 background-section">
-                                <div class="filtering-t w-100">
-                                    <div class="filtering-wrap w-100">
-                                        <div class="filtering w-100 d-flex align-items-center justify-content-center">
-                                            <div class="dsn-container">
-                                                <button class="<%= currentCategory === 'all' ? 'active' : '' %>" 
-                                                        data-filter="*" type="button" onclick="filterGallery('all')">
-                                                    All
-                                                </button>
-                                                <% categories.forEach(cat => { %>
-                                                    <button type="button" 
-                                                            class="<%= currentCategory === cat ? 'active' : '' %>" 
-                                                            data-filter=".<%= cat.toLowerCase() %> , .category-<%= cat.toLowerCase() %>"
-                                                            onclick="filterGallery('<%= cat %>')">
-                                                        <%= cat %>
-                                                    </button>
-                                                <% }); %>
-                                            </div>
+                <style>
+                    /* Base Container */
+                    .insta-gallery-container {
+                        width: 100%;
+                        max-width: 1400px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        box-sizing: border-box;
+                    }
+
+                    /* Filter Bar */
+                    .insta-filter-bar {
+                        width: 100%;
+                        padding: 20px 0;
+                        margin-bottom: 30px;
+                        position: sticky;
+                        top: 0;
+                        background: rgba(255, 255, 255, 0.2);
+                        z-index: 10;
+                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+                        backdrop-filter: blur(5px);
+                    }
+
+                    .insta-filter-buttons {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 10px;
+                    }
+
+                    .insta-filter-btn {
+                        padding: 8px 20px;
+                        border: none;
+                        background: #f5f5f5;
+                        border-radius: 20px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #333;
+                        transition: all 0.3s ease;
+                    }
+
+                    .insta-filter-btn:hover {
+                        background: #e0e0e0;
+                    }
+
+                    .insta-filter-btn.active {
+                        background: #000;
+                        color: white;
+                    }
+
+                    /* Masonry Grid */
+                    .insta-grid {
+                        column-count: 2;
+                        column-gap: 20px;
+                    }
+
+                    @media (min-width: 768px) {
+                        .insta-grid {
+                            column-count: 3;
+                        }
+                        .insta-card-footer{
+                            padding: 15px;
+                        }
+                    }
+
+                    @media (min-width: 1024px) {
+                        .insta-grid {
+                            column-count: 4;
+                        }
+                    }
+
+                    .insta-grid-item {
+                        break-inside: avoid;
+                        margin-bottom: 20px;
+                        display: inline-block;
+                        width: 100%;
+                    }
+
+                    /* Card */
+                    .insta-card {
+                        background: white;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                    }
+
+                    .insta-card:hover {
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    }
+
+                    .insta-image-wrapper {
+                        position: relative;
+                        width: 100%;
+                        overflow: hidden;
+                    }
+
+                    .insta-image {
+                        width: 100%;
+                        height: auto;
+                        display: block;
+                        border-radius: 8px 8px 0 0;
+                    }
+
+                    .insta-category-tag {
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: rgba(0, 0, 0, 0.7);
+                        color: white;
+                        padding: 5px 12px;
+                        border-radius: 20px;
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+
+                    .insta-card-footer {
+                        padding: 5px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+
+                    .insta-title {
+                        margin: 0;
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: #333;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 80%;
+                    }
+
+                    .insta-action-btn {
+                        width: 30px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: #f5f5f5;
+                        border-radius: 50%;
+                        transition: all 0.3s ease;
+                    }
+
+                    .insta-action-btn:hover {
+                        background: #000;
+                    }
+
+                    .insta-action-btn svg {
+                        width: 14px;
+                        height: 14px;
+                        fill: #333;
+                    }
+
+                    .insta-action-btn:hover svg {
+                        fill: white;
+                    }
+
+                    /* Pagination */
+                    .insta-pagination {
+                        display: flex;
+                        justify-content: center;
+                        gap: 15px;
+                        margin-top: 40px;
+                    }
+
+                    .insta-page-link {
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        text-decoration: none;
+                        color: #333;
+                        font-weight: 500;
+                        transition: all 0.3s ease;
+                        border: 1px solid #eee;
+                    }
+
+                    .insta-page-link:hover {
+                        background: #f5f5f5;
+                    }
+
+                    .insta-page-link.active {
+                        background: #000;
+                        color: #fff;
+                    }
+
+                    .insta-modal {
+                        position: fixed;
+                        z-index: 9999;
+                        left: 0;
+                        top: 0;
+                        width: 100vw;
+                        height: 100vh;
+                        overflow: hidden;
+                        background-color: rgba(0, 0, 0, 0.9);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: opacity 0.3s ease;
+                    }
+
+                    .insta-modal-content {
+                        max-width: 90vw;
+                        max-height: 90vh;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        position: relative;
+                    }
+
+                    .insta-modal-image {
+                        max-width: 100%;
+                        max-height: 80vh;
+                        border-radius: 10px;
+                    }
+
+                    .insta-modal-caption {
+                        margin-top: 15px;
+                        color: white;
+                        font-size: 16px;
+                        text-align: center;
+                    }
+
+                    .insta-modal-nav {
+                        position: absolute;
+                        top: 50%;
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        transform: translateY(-50%);
+                        padding: 0 30px;
+                    }
+
+                    .insta-modal-nav button {
+                        background: rgba(255, 255, 255, 0.2);
+                        color: white;
+                        border: none;
+                        padding: 10px 15px;
+                        font-size: 20px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        transition: background 0.3s ease;
+                    }
+
+                    .insta-modal-nav button:hover {
+                        background: rgba(255, 255, 255, 0.4);
+                    }
+
+                    .insta-close {
+                        position: absolute;
+                        top: 20px;
+                        right: 30px;
+                        font-size: 30px;
+                        color: white;
+                        cursor: pointer;
+                        font-weight: bold;
+                    }
+
+                    .insta-close:hover {
+                        color: red;
+                    }
+                </style>
+
+                <div class="insta-gallery-container">
+                    <!-- Filter -->
+                    <div class="insta-filter-bar">
+                        <div class="insta-filter-buttons">
+                            <button class="insta-filter-btn <%= currentCategory === 'all' ? 'active' : '' %>"
+                                onclick="filterGallery('all')">All</button>
+                            <% categories.forEach(cat=> { %>
+                                <button class="insta-filter-btn <%= currentCategory === cat ? 'active' : '' %>"
+                                    onclick="filterGallery('<%= cat %>')">
+                                    <%= cat %>
+                                </button>
+                                <% }); %>
+                        </div>
+                    </div>
+
+                    <!-- Gallery -->
+                    <div class="insta-grid">
+                        <% galleryItems.forEach((item, index)=> { %>
+                            <div class="insta-grid-item <%= item.category.toLowerCase() %>">
+                                <div class="insta-card" onclick="openGallery(<%= index %>)">
+                                    <div class="insta-image-wrapper">
+                                        <img src="<%= item.imageUrl %>" alt="<%= item.title %>" loading="lazy"
+                                            class="insta-image">
+                                        <div class="insta-category-tag">
+                                            <%= item.category %>
+                                        </div>
+                                    </div>
+                                    <div class="insta-card-footer">
+                                        <h3 class="insta-title">
+                                            <%= item.title %>
+                                        </h3>
+                                        <div class="insta-action-btn">
+                                            <svg viewBox="0 0 384 512">
+                                                <path
+                                                    d="M328 96h24v288h-48V177.9L81 401l-17 17-33.9-34 17-17 223-223H64V96h264z">
+                                                </path>
+                                            </svg>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                
-                            <!-- Gallery Items -->
-                            <div class="dsn-container">
-                                <div class="dsn-posts hover-box-item d-grid grid-lg-3 dsn-isotope use-filter" data-dsn-gap="30px">
-                                    <% galleryItems.forEach((item, index) => { %>
-                                    <article class="dsn-item-post grid-item over-hidden p-relative <%= item.category.toLowerCase() %>">
-                                        <div class="box-image-bg has-border-radius w-100 h-v-70 over-hidden before-z-index">
-                                            <div class="cat background-main d-flex p-absolute top-0 right-0">
-                                                <svg class="top-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 100 100" xml:space="preserve">
-                                                    <path d="M98.1 0h1.9v51.9h-1.9c0-27.6-22.4-50-50-50V0h50z"></path>
-                                                </svg>
-                                                <svg class="bottom-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 100 100" xml:space="preserve">
-                                                    <path d="M98.1 0h1.9v51.9h-1.9c0-27.6-22.4-50-50-50V0h50z"></path>
-                                                </svg>
-                                            </div>
-                                            <div class="box-img box-image-bg over-hidden has-border-radius gallery-item" 
-                                                 onclick="openGallery(<%= index %>)">
-                                                <img class="contain-bg-img has-border-radius w-100" 
-                                                     src="<%= item.imageUrl %>" 
-                                                     alt="<%= item.title %>">
-                                            </div>
-                                        </div>
-                
-                                        <div class="post-content mt-20 p-relative z-index-1 d-flex flex-column">
-                                            <div class="post-info d-flex justify-content-between">
-                                                <div class="">
-                                                    <div class="cat d-flex p-0 mb-5">
-                                                        <span class="background-section heading-color"><%= item.category %></span>
-                                                    </div>
-                                                    <h2 class="post-title word-wrap d-inline-block title-block">
-                                                        <a href="0#" class="effect-ajax init-color" 
-                                                           data-dsn-ajax="work"><%= item.title %></a>
-                                                    </h2>
-                                                   
-                                                </div>
-                                                <a href="0#" 
-                                                   class="dsn-btn dsn-btn-shape effect-ajax d-flex align-items-end mr-20">
-                                                    <span class="icon background-section v-light">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                                                            <path d="M328 96h24v288h-48V177.9L81 401l-17 17-33.9-34 17-17 223-223H64V96h264z"></path>
-                                                        </svg>
-                                                    </span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </article>
-                                    <% }); %>
-                                </div>
-                
-                                <!-- Pagination -->
-                                <% if (totalPages > 1) { %>
-                                <div class="pagination mt-50 d-flex justify-content-center">
-                                    <% if (hasPreviousPage) { %>
-                                        <a href="/gallery?category=<%= currentCategory %>&page=<%= previousPage %>" 
-                                           class="page-link mr-10">Previous</a>
-                                    <% } %>
-                                    
-                                    <% for (let i = 1; i <= totalPages; i++) { %>
-                                        <a href="/gallery?category=<%= currentCategory %>&page=<%= i %>" 
-                                           class="page-link <%= currentPage === i ? 'active' : '' %> mr-10">
+                            <% }); %>
+                    </div>
+
+                    <!-- Pagination -->
+                    <% if (totalPages> 1) { %>
+                        <div class="insta-pagination">
+                            <% if (hasPreviousPage) { %>
+                                <a href="/gallery?category=<%= currentCategory %>&page=<%= previousPage %>"
+                                    class="insta-page-link">&larr; Previous</a>
+                                <% } %>
+
+                                    <% for (let i=1; i <=totalPages; i++) { %>
+                                        <a href="/gallery?category=<%= currentCategory %>&page=<%= i %>"
+                                            class="insta-page-link <%= currentPage === i ? 'active' : '' %>">
                                             <%= i %>
                                         </a>
-                                    <% } %>
-                                    
-                                    <% if (hasNextPage) { %>
-                                        <a href="/gallery?category=<%= currentCategory %>&page=<%= nextPage %>" 
-                                           class="page-link">Next</a>
-                                    <% } %>
-                                </div>
-                                <% } %>
-                            </div>
-                
-                            <!-- Gallery Modal -->
-                            <div id="galleryModal" class="modal">
-                                <span class="close" onclick="closeGallery()">&times;</span>
-                                <a class="prev" onclick="changeImage(-1)">&#10094;</a>
-                                <a class="next" onclick="changeImage(1)">&#10095;</a>
-                                <img id="modalImage" class="modal-content">
-                                <div id="caption" class="caption"><!-- Caption will be inserted here --></div>
-                            </div>
+                                        <% } %>
+
+                                            <% if (hasNextPage) { %>
+                                                <a href="/gallery?category=<%= currentCategory %>&page=<%= nextPage %>"
+                                                    class="insta-page-link">Next &rarr;</a>
+                                                <% } %>
+                        </div>
+                        <% } %>
+                </div>
+                <!-- Gallery Modal -->
+                <div id="instaModal" class="insta-modal" style="display: none; opacity: 0;">
+                    <span class="insta-close" onclick="closeGallery()">&times;</span>
+                    <div class="insta-modal-content">
+                        <img id="instaModalImage" class="insta-modal-image" src="" alt="">
+                        <div class="insta-modal-caption">
+                            <span id="instaCurrentIndex">1</span> / <%= galleryItems.length %> -
+                                <span id="instaCaption"></span>
+                        </div>
+                        <div class="insta-modal-nav">
+                            <button onclick="changeImage(-1)">←</button>
+                            <button onclick="changeImage(1)">→</button>
                         </div>
                     </div>
                 </div>
-                
+
+
                 <script>
-                    // Gallery Modal Functions
-                    let currentImageIndex = 0;
-                    const galleryImages = [
-                        <% galleryItems.forEach(item => { %>
-                        { src: "<%= item.imageUrl %>", title: "<%= item.title %>" },
-                        <% }); %>
-                    ];
-                
-                    function openGallery(index) {
-                        currentImageIndex = index;
-                        const modal = document.getElementById('galleryModal');
-                        const modalImg = document.getElementById('modalImage');
-                        const caption = document.getElementById('caption');
-                        
-                        modal.style.display = "block";
-                        modalImg.src = galleryImages[currentImageIndex].src;
-                        caption.innerHTML = galleryImages[currentImageIndex].title;
-                    }
-                
-                    function closeGallery() {
-                        document.getElementById('galleryModal').style.display = "none";
-                    }
-                
-                    function changeImage(direction) {
-                        currentImageIndex += direction;
-                        if (currentImageIndex >= galleryImages.length) currentImageIndex = 0;
-                        if (currentImageIndex < 0) currentImageIndex = galleryImages.length - 1;
-                        
-                        const modalImg = document.getElementById('modalImage');
-                        const caption = document.getElementById('caption');
-                        modalImg.src = galleryImages[currentImageIndex].src;
-                        caption.innerHTML = galleryImages[currentImageIndex].title;
-                    }
-                
-                    // Close modal when clicking outside
-                    window.onclick = function(event) {
-                        if (event.target === document.getElementById('galleryModal')) {
-                            closeGallery();
+                    document.addEventListener('DOMContentLoaded', function () {
+                        let currentImageIndex = 0;
+                        const galleryImages = [
+                            <% galleryItems.forEach(item => { %>
+                            { src: "<%= item.imageUrl %>", title: "<%= item.title %>" },
+                            <% }); %>
+                        ];
+
+                        function openGallery(index) {
+                            currentImageIndex = index;
+                            const modal = document.getElementById('instaModal');
+                            const modalImg = document.getElementById('instaModalImage');
+                            const caption = document.getElementById('instaCaption');
+                            const currentIndex = document.getElementById('instaCurrentIndex');
+
+                            if (!modal || !modalImg || !caption || !currentIndex) {
+                                console.error('Gallery modal elements not found.');
+                                return;
+                            }
+
+                            modal.style.display = "flex";
+                            setTimeout(() => {
+                                modal.style.opacity = 1;
+                            }, 10);
+                            modalImg.src = galleryImages[currentImageIndex].src;
+                            caption.textContent = galleryImages[currentImageIndex].title;
+                            currentIndex.textContent = currentImageIndex + 1;
+                            document.body.style.overflow = 'hidden';
                         }
-                    }
-                
-                    // Category Filter Function
-                    function filterGallery(category) {
-                        window.location.href = `/gallery?category=${category}&page=1`;
-                    }
+
+                        function closeGallery() {
+                            const modal = document.getElementById('instaModal');
+                            modal.style.opacity = 0;
+                            setTimeout(() => {
+                                modal.style.display = "none";
+                            }, 300);
+                            document.body.style.overflow = 'auto';
+                        }
+
+                        function changeImage(direction) {
+                            currentImageIndex += direction;
+                            if (currentImageIndex >= galleryImages.length) currentImageIndex = 0;
+                            if (currentImageIndex < 0) currentImageIndex = galleryImages.length - 1;
+
+                            const modalImg = document.getElementById('instaModalImage');
+                            const caption = document.getElementById('instaCaption');
+                            const currentIndex = document.getElementById('instaCurrentIndex');
+
+                            modalImg.src = galleryImages[currentImageIndex].src;
+                            caption.textContent = galleryImages[currentImageIndex].title;
+                            currentIndex.textContent = currentImageIndex + 1;
+                        }
+
+                        window.openGallery = openGallery;
+                        window.closeGallery = closeGallery;
+                        window.changeImage = changeImage;
+
+                        window.onclick = function (event) {
+                            const modal = document.getElementById('instaModal');
+                            if (event.target === modal) {
+                                closeGallery();
+                            }
+                        }
+
+                        document.addEventListener('keydown', function (event) {
+                            const modal = document.getElementById('instaModal');
+                            if (modal && modal.style.display === 'flex') {
+                                if (event.key === 'Escape') {
+                                    closeGallery();
+                                } else if (event.key === 'ArrowLeft') {
+                                    changeImage(-1);
+                                } else if (event.key === 'ArrowRight') {
+                                    changeImage(1);
+                                }
+                            }
+                        });
+
+                        window.filterGallery = function (category) {
+                            window.location.href = `/gallery?category=${category}&page=1`;
+                        }
+                    });
                 </script>
-                
-                <style>
-                    /* Modal Styles */
-                    .modal {
-                        display: none;
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(0,0,0,0.9);
-                        z-index: 9999;
-                    }
-                    
-                    .modal-content {
-                        max-width: 90%;
-                        max-height: 90%;
-                        margin: auto;
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                    }
-                    
-                    .close, .prev, .next {
-                        position: absolute;
-                        color: white;
-                        font-size: 30px;
-                        cursor: pointer;
-                    }
-                    
-                    .close { right: 20px; top: 20px; }
-                    .prev { left: 20px; top: 50%; }
-                    .next { right: 20px; top: 50%; }
-                    
-                    .caption {
-                        position: absolute;
-                        bottom: 20px;
-                        width: 100%;
-                        text-align: center;
-                        color: white;
-                    }
-                    
-                    /* Pagination Styles */
-                    .pagination {
-                        display: flex;
-                        gap: 10px;
-                    }
-                    
-                    .page-link {
-                        padding: 8px 16px;
-                        background: #f8f9fa;
-                        color: #2a2a2a;
-                        border-radius: 4px;
-                        text-decoration: none;
-                    }
-                    
-                    .page-link.active {
-                        background: #2a2a2a;
-                        color: white;
-                    }
-                </style>
+
                 <!-- ========== End Portfolio ========== -->
 
                 <section class="next-page v-dark">
@@ -478,7 +694,7 @@
 
                             <div class="dsn-btn dsn-btn-shape d-flex">
 
-                                <a class="button background-main v-light" href="#">
+                                <a class="button background-main v-light" href="/contact">
                                     <span class="title-btn p-relative  z-index-1 heading-color"
                                         data-animate-text="Contact Us">
                                         <span>Contact Us</span>
@@ -507,11 +723,11 @@
                                 </div>
 
                                 <div class="p-relative dsn-marquee over-hidden"
-                                data-dsn-option='{"speed":0,"duplicatedNumber":7,"duration":7000,"gap":60,"delayBeforeStart":1000,"direction":"left","duplicated":true,"pauseOnHover":false,"startVisible":true,"pauseOnCycle":false,"allowCss3Support":true}'>
-                                <h2 class="dsn-text-marquee d-flex title-lg"
-                                    style="font-family: brush-script-std;font-weight: 400;font-style: normal;">The
-                                    Curtain Raiser</h2>
-                            </div>
+                                    data-dsn-option='{"speed":0,"duplicatedNumber":7,"duration":7000,"gap":60,"delayBeforeStart":1000,"direction":"left","duplicated":true,"pauseOnHover":false,"startVisible":true,"pauseOnCycle":false,"allowCss3Support":true}'>
+                                    <h2 class="dsn-text-marquee d-flex title-lg"
+                                        style="font-family: brush-script-std;font-weight: 400;font-style: normal;">The
+                                        Curtain Raiser</h2>
+                                </div>
                             </div>
 
                         </div>
@@ -584,23 +800,25 @@
                         <h4
                             class="sm-title-block p-relative circle-before circle-after circle-both-before mb-10 text-upper">
                             socials Links</h4>
-                            <ul class="dsn-socials box-social">
-                                <li>
-                                    <a href="https://www.facebook.com/share/12J9ors9F3o/" target="_blank" class="background-main">
-                                        <i class="fab fa-facebook-f" aria-hidden="true"></i> <span>FB</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.instagram.com/actorsorbit?igsh=MXN4b2FkeWtzMjJidw==" target="_blank" class="background-main">
-                                        <i class="fab fa-instagram" aria-hidden="true"></i> <span>IN</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://wa.me/+919846469959" target="_blank" class="background-main">
-                                        <i class="fab fa-whatsapp" aria-hidden="true"></i> <span>WA</span>
-                                    </a>
-                                </li>
-                            </ul>
+                        <ul class="dsn-socials box-social">
+                            <li>
+                                <a href="https://www.facebook.com/share/12J9ors9F3o/" target="_blank"
+                                    class="background-main">
+                                    <i class="fab fa-facebook-f" aria-hidden="true"></i> <span>FB</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.instagram.com/actorsorbit?igsh=MXN4b2FkeWtzMjJidw=="
+                                    target="_blank" class="background-main">
+                                    <i class="fab fa-instagram" aria-hidden="true"></i> <span>IN</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://wa.me/+919846469959" target="_blank" class="background-main">
+                                    <i class="fab fa-whatsapp" aria-hidden="true"></i> <span>WA</span>
+                                </a>
+                            </li>
+                        </ul>
 
                     </div>
                 </div>

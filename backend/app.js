@@ -88,20 +88,17 @@ app.get('/services', async (req, res) => {
 app.get('/gallery', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = 16; // Items per page
+        const limit = 16; 
         const skip = (page - 1) * limit;
         const category = req.query.category || 'all';
         
-        // Build query based on category
         const query = {};
         if (category && category !== 'all') {
             query.category = category;
         }
 
-        // Get all unique categories for filter
         const categories = await Gallery.distinct('category');
         
-        // Get paginated results
         const [totalItems, galleryItems] = await Promise.all([
             Gallery.countDocuments(query),
             Gallery.find(query)
@@ -123,7 +120,8 @@ app.get('/gallery', async (req, res) => {
             hasNextPage: page < totalPages,
             hasPreviousPage: page > 1,
             nextPage: page + 1,
-            previousPage: page - 1
+            previousPage: page - 1,
+            totalItems: galleryItems.length
         });
     } catch (err) {
         console.error('Error fetching gallery items:', err);
@@ -133,7 +131,8 @@ app.get('/gallery', async (req, res) => {
             categories: [],
             currentCategory: 'all',
             currentPage: 1,
-            totalPages: 1
+            totalPages: 1,
+            totalItems: 0
         });
     }
 });
