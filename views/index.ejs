@@ -100,7 +100,7 @@
         <!-- ========== Menu ========== -->
         <header id="site_menu_header" class="site-header d-none">
             <div class="main-logo">
-                <a href="/" data-dsn-text="TheCurtainRaiser" class="custom-logo-link main-brand effect-ajax" rel="home"
+                <a href="/" data-dsn-text="TheCurtainRaiser" class="custom-logo-link main-brand" rel="home"
                     aria-current="page">
                     <img src="/img/logo-light.png" class="custom-logo logo-light" alt="The Curtain Raiser" />
                     <img src="/img/logo-light.png" class="custom-logo logo-dark" alt="The Curtain Raiser" />
@@ -120,9 +120,8 @@
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a title="Gallery" href="/gallery">
-                            <span class="overflow">Gallery</span>
-                        </a>
+                        <a href="/gallery" onclick="event.stopImmediatePropagation()">Gallery</a>
+
                     </li>
                     <li class="nav-item ">
                         <a title="About" href="/about">
