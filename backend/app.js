@@ -425,17 +425,20 @@ app.get('/admin-gallery', authMiddleware, async (req, res) => {
 // POST - Create new gallery item
 app.post('/create-gallery', authMiddleware, upload.single('image'), async (req, res) => {
     try {
-        const { title, category,createdAt } = req.body;
+        const { title, category, createdAt } = req.body;
         
         if (!req.file) {
             throw new Error('Image is required');
         }
 
+        // Set a default title if empty or not provided
+        const itemTitle = title?.trim() || `no title`;
+
         const newGalleryItem = new Gallery({
-            title,
+            title: itemTitle,
             imageUrl: req.file.path,
-            category,
-            createdAt
+            category: category,
+            createdAt: createdAt || new Date()
         });
 
         await newGalleryItem.save();
@@ -454,13 +457,17 @@ app.post('/gallery/update/:id', authMiddleware, upload.single('image'), async (r
         const { title, category } = req.body;
         const existingItem = await Gallery.findById(req.params.id);
         
+        if (!existingItem) {
+            throw new Error('Gallery item not found');
+        }
+
         const updateData = {
-            title,
-            category
+            title: title?.trim() || existingItem.title, 
+            category: category || existingItem.category 
         };
 
         if (req.file) {
-            // Delete old image from Cloudinary
+            // Delete old image from Cloudinary if it exists
             if (existingItem.imageUrl) {
                 try {
                     const publicId = existingItem.imageUrl
@@ -471,17 +478,28 @@ app.post('/gallery/update/:id', authMiddleware, upload.single('image'), async (r
                     await cloudinary.uploader.destroy(publicId);
                 } catch (err) {
                     console.error('Error deleting old image:', err);
+                    // Continue with update even if deletion fails
                 }
             }
             updateData.imageUrl = req.file.path;
         }
 
-        await Gallery.findByIdAndUpdate(req.params.id, updateData);
+        const finalUpdateData = {};
+        if (title !== undefined) finalUpdateData.title = updateData.title;
+        if (category !== undefined) finalUpdateData.category = updateData.category;
+        if (req.file) finalUpdateData.imageUrl = updateData.imageUrl;
+
+        await Gallery.findByIdAndUpdate(
+            req.params.id,
+            { $set: finalUpdateData },
+            { new: true, runValidators: true }
+        );
+
         req.flash('success', 'Gallery item updated successfully');
         res.redirect('/admin-gallery');
     } catch (error) {
         console.error(error);
-        req.flash('error', 'Error updating gallery item');
+        req.flash('error', `Error updating gallery item: ${error.message}`);
         res.redirect('/admin-gallery');
     }
 });

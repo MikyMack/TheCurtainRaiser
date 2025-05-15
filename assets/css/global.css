@@ -141,9 +141,9 @@ img {
   max-width: 100%;
   vertical-align: middle;
 }
-img:not([height]) {
+/* img:not([height]) {
   height: auto;
-}
+} */
 
 iframe {
   border: none;
