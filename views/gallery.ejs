@@ -297,8 +297,8 @@
                                     <div class="insta-card-footer">
                                         <h3 class="insta-title">
                                             <% if (item.title && !/no title/i.test(item.title)) { %>
-                                                <%= item.title.split(' ').slice(0, 3).join(' ') %>
-                                                <% if (item.title.split(' ').length > 3) { %>
+                                                <%= item.title.split(' ').slice(0, 4).join(' ') %>
+                                                <% if (item.title.split(' ').length > 4) { %>
                                                     <span class="insta-title-ellipsis">...</span>
                                                 <% } %>
                                             <% } else { %>
