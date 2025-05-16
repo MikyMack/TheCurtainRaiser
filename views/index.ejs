@@ -597,65 +597,77 @@
                         const overlay = document.querySelector('.video-popup-overlay');
                         const closeButton = document.querySelector('.video-popup-close');
                         const iframe = document.querySelector('.video-popup-iframe');
+                        let player;
                         let iframeLoaded = false;
-
-                        playButton.addEventListener('mouseenter', function () {
-                            if (!iframeLoaded) {
-                                const videoId = this.getAttribute('data-youtube-id');
-                                const isShorts = this.getAttribute('data-is-shorts') === 'true';
-                                // Use different URL format for Shorts
-                                const embedUrl = isShorts
-                                    ? `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1&playsinline=1`
-                                    : `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1`;
-
-                                iframe.src = embedUrl;
-                                iframeLoaded = true;
+                
+                        // Initialize YouTube Player
+                        function onYouTubeIframeAPIReady() {
+                            player = new YT.Player(iframe, {
+                                events: {
+                                    'onReady': onPlayerReady,
+                                    'onStateChange': onPlayerStateChange
+                                }
+                            });
+                        }
+                
+                        function onPlayerReady(event) {
+                            iframeLoaded = true;
+                            // Auto-play when popup opens
+                            if (overlay.classList.contains('active')) {
+                                event.target.playVideo();
                             }
-                        }, { once: true });
-
+                        }
+                
+                        function onPlayerStateChange(event) {
+                            // Close popup when video ends
+                            if (event.data === YT.PlayerState.ENDED) {
+                                closeVideo();
+                            }
+                        }
+                
                         playButton.addEventListener('click', function (e) {
                             e.preventDefault();
                             const videoId = this.getAttribute('data-youtube-id');
-                            const isShorts = this.getAttribute('data-is-shorts') === 'true';
-
+                            
                             if (!iframeLoaded) {
-                                // Use different URL format for Shorts with autoplay
-                                const embedUrl = isShorts
-                                    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&playsinline=1`
-                                    : `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1`;
-
-                                iframe.src = embedUrl;
-                                iframeLoaded = true;
+                                iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&autoplay=1&rel=0&modestbranding=1`;
                             }
-
+                
                             overlay.classList.add('active');
                             document.body.style.overflow = 'hidden';
-
-                            if (typeof YT !== 'undefined' && iframe.id && YT.get(iframe.id)) {
-                                YT.get(iframe.id).playVideo();
+                
+                            // If player is already loaded, play immediately
+                            if (player && typeof player.playVideo === 'function') {
+                                player.playVideo();
                             }
                         });
-
+                
                         function closeVideo() {
                             overlay.classList.remove('active');
                             document.body.style.overflow = '';
-                            if (typeof YT !== 'undefined' && iframe.id && YT.get(iframe.id)) {
-                                YT.get(iframe.id).pauseVideo();
+                            if (player && typeof player.pauseVideo === 'function') {
+                                player.pauseVideo();
                             }
                         }
-
+                
                         closeButton.addEventListener('click', closeVideo);
                         overlay.addEventListener('click', function (e) {
                             if (e.target === overlay) closeVideo();
                         });
-
+                
                         // Load YouTube API
-                        const tag = document.createElement('script');
-                        tag.src = "https://www.youtube.com/iframe_api";
-                        const firstScriptTag = document.getElementsByTagName('script')[0];
-                        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-                        iframe.id = 'yt-player-' + Math.random().toString(36).substr(2, 9);
+                        if (!window.YT) {
+                            const tag = document.createElement('script');
+                            tag.src = "https://www.youtube.com/iframe_api";
+                            const firstScriptTag = document.getElementsByTagName('script')[0];
+                            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                            
+                            // Create global callback for YouTube API
+                            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+                        } else {
+                            // If API is already loaded
+                            onYouTubeIframeAPIReady();
+                        }
                     });
                 </script>
 
