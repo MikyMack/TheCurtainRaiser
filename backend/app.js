@@ -46,7 +46,7 @@ app.use('/api/auth', authRoutes);
 app.get('/', async (req, res) => {
     try {
         const services = await Service.find({ isActive: true }).exec();
-        const gallery = await Gallery.find().limit(12).exec(); 
+        const gallery = await Gallery.find().sort({ createdAt: -1 }).limit(12).exec(); 
         const announcements = await Announcement.find().sort({ createdAt: -1 }).limit(10).exec();
         
         res.render('index', { 
