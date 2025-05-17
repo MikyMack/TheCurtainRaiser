@@ -19,6 +19,85 @@
     <link href="/css/plugins.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://use.typekit.net/bdf4btv.css">
+    <style>
+        /* Scroll indicator styles */
+        .mobile-scroll-indicator {
+            display: none;
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            text-align: center;
+        }
+        
+        .scroll-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .scroll-text {
+            color: #afafaf;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+        
+        .scroll-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.7);
+            border-radius: 50%;
+            animation: bounce 2s infinite;
+            margin-bottom: 20px;
+        }
+        
+        .scroll-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+        
+        /* Bounce animation */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        /* Active state */
+        .scroll-content:active .scroll-text {
+            transform: translateY(3px);
+        }
+        
+        .scroll-content:active .scroll-icon {
+            transform: scale(0.95);
+            background: rgba(0,0,0,0.9);
+        }
+        
+        /* Show only on mobile */
+        @media (max-width: 768px) {
+            .mobile-scroll-indicator {
+                display: block;
+            }
+            
+            .description-inner {
+                padding-bottom: 30px;
+            }
+        }
+    </style>
 </head>
 
 <body class="v-dark dsn-ajax">
@@ -197,21 +276,40 @@
                             <h2 class="title-lg "
                                 style="font-family: brush-script-std;font-weight: 400;font-style: normal;">The Curtain
                             </h2>
-                            <div class="w-80 description-inner d-flex align-items-end justify-content-center">
+                            <div class="w-80 description-inner d-flex align-items-end justify-content-center position-relative">
+                                <!-- Your existing content -->
                                 <div class="description-box d-flex align-items-center mr-auto">
                                     <div class="icons">
                                         <img src="/img/logo-icon.png" alt="The Curtain Raiser" />
                                     </div>
-                                    <p class="max-w350">An Institute for <br> the development of creativity
-                                    </p>
+                                    <p class="max-w350">An Institute for <br> the development of creativity</p>
                                 </div>
-                            
-                                <h3 class="title-lg mt-20"
-                                    style="font-family: brush-script-std;font-weight: 400;font-style: normal;">Raiser
-                                </h3>
-                              
+                                
+                                <h3 class="title-lg mt-20" style="font-family: brush-script-std;font-weight: 400;font-style: normal;">Raiser</h3>
+                                
+                                <!-- Scroll down indicator -->
+                                <div class="mobile-scroll-indicator">
+                                    <div class="scroll-content" onclick="smoothScroll()">
+                                        <span class="scroll-text">Scroll Now</span>
+                                        <div class="scroll-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="24" height="24">
+                                                <path fill="currentColor" d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 402.7 54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
+                          
+                            
+                            <script>
+                                function smoothScroll() {
+                                    window.scrollBy({
+                                        top: window.innerHeight * 1.5,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            </script>
                         </div>
 
                     </div>
